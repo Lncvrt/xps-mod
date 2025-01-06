@@ -1,0 +1,26 @@
+{
+    "geode": "4.1.2",
+    "gd": {
+        "win": "2.2074",
+        "android": "2.2074",
+        "mac": "2.2074",
+        "ios": "2.2074"
+    },
+    "resources": {
+        "sprites": [
+            "resources/*.png"
+        ]
+    },
+    "settings": {
+        "alternate-menu-buttons": {
+            "name": "Alternate Menu Buttons",
+            "type": "bool",
+            "default": false
+        }
+    },
+    "id": "xytriza.xps-mod",
+    "name": "XPS",
+    "version": "v1.0.0",
+    "developer": "Xytriza",
+    "description": ""
+}
