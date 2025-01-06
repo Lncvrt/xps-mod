@@ -6,6 +6,7 @@
         "mac": "2.2074",
         "ios": "2.2074"
     },
+    "early-load": true,
     "resources": {
         "sprites": [
             "resources/*.png"
@@ -18,6 +19,13 @@
             "default": false
         }
     },
+	"dependencies": [
+        {
+            "id": "geode.node-ids",
+            "version": "v1.18.0",
+            "importance": "required"
+        }
+    ],
     "id": "xytriza.xps-mod",
     "name": "XPS",
     "version": "v1.0.0",

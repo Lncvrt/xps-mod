@@ -64,12 +64,14 @@ class $modify(MenuLayerMod, MenuLayer) {
         auto winSize = CCDirector::sharedDirector()->getWinSize();
 
         auto xpsSprite = CCSprite::create("xps-logo-transparent-gold.png"_spr);
-        auto xpsWebsiteSprite = CCSprite::create("xps-website-button.png"_spr);
-        auto xpsDashboardSprite = CCSprite::create("xps-dashboard-button.png"_spr);
+        auto blankSprite = CCSprite::createWithSpriteFrameName("GJ_longBtn01_001.png");
         auto discordSprite = CCSprite::createWithSpriteFrameName("gj_discordIcon_001.png");
         auto twitterSprite = CCSprite::createWithSpriteFrameName("gj_twIcon_001.png");
         auto youtubeSprite = CCSprite::createWithSpriteFrameName("gj_ytIcon_001.png");
         auto twitchSprite = CCSprite::createWithSpriteFrameName("gj_twitchIcon_001.png");
+
+		CCLabelBMFont* xpsDashboardLabel = CCLabelBMFont::create("Dashboard", "bigFont.fnt");
+		CCLabelBMFont* xpsWebsiteLabel = CCLabelBMFont::create("Website", "bigFont.fnt");
 
         auto xpsButton = CCMenuItemSpriteExtra::create(
             CircleButtonSprite::create(xpsSprite),
@@ -79,14 +81,14 @@ class $modify(MenuLayerMod, MenuLayer) {
         xpsButton->setID("xps-button"_spr);
 
         auto xpsWebsiteButton = CCMenuItemSpriteExtra::create(
-            xpsWebsiteSprite,
+            blankSprite,
             this,
             menu_selector(MenuLayerMod::openWebsiteLink)
         );
         xpsWebsiteButton->setID("website-button"_spr);
 
         auto xpsDashboardButton = CCMenuItemSpriteExtra::create(
-            xpsDashboardSprite,
+            blankSprite,
             this,
             menu_selector(MenuLayerMod::openDashboardLink)
         );
@@ -123,11 +125,18 @@ class $modify(MenuLayerMod, MenuLayer) {
         xpsButton->setID("xps-button"_spr);
         xpsWebsiteButton->setID("website-button"_spr);
         xpsDashboardButton->setID("dashboard-button"_spr);
+
+        xpsDashboardLabel->setScale(0.4);
+        xpsWebsiteLabel->setScale(0.55f);
+        xpsDashboardLabel->setPosition(45, 17.5);
+        xpsWebsiteLabel->setPosition(45, 17.5);
+
+        xpsDashboardButton->addChild(xpsDashboardLabel);
+        xpsWebsiteButton->addChild(xpsWebsiteLabel);
         
         xpsSprite->setScale(0.55f);
 
         if (auto bottomMenu = this->getChildByID("bottom-menu")) {
-            bottomMenu->removeChildByID("achievements-button");
             bottomMenu->removeChildByID("newgrounds-button");
             bottomMenu->addChild(xpsButton);
             bottomMenu->updateLayout();
@@ -154,6 +163,12 @@ class $modify(MenuLayerMod, MenuLayer) {
 
         this->addChild(xpsButtonsRight);
         this->addChild(xpsButtonsLeft);
+
+        auto profileName = this->getChildByID("player-username");
+        auto profileButton = this->getChildByID("profile-menu");
+        profileButton->setPosition(101,125);
+        profileName->setPosition(57,161);
+
         return true;
     }
 
@@ -229,6 +244,19 @@ class $modify(CreatorLayer) {
         AxisLayout* menuLayout = as<AxisLayout*>(m_creatorButtonsMenu->getLayout());
         menuLayout->setGap(13.5);
         m_creatorButtonsMenu->updateLayout();
+
+        return true;
+    }
+};
+
+class $modify(LoadingLayer) {
+    bool init(bool p0) {
+        if (!LoadingLayer::init(p0)) {
+            return false;
+        }
+
+        this->getChildByID("cocos2d-logo")->setVisible(false);
+        this->getChildByID("fmod-logo")->setVisible(false);
 
         return true;
     }
