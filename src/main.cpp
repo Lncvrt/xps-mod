@@ -192,11 +192,6 @@ class $modify(CreatorLayer) {
             return false;
         }
 
-        if (Loader::get()->isModLoaded("cvolton.betterinfo")) {
-            this->getChildByID("top-right-menu")->getChildByID("vault-button")->setPositionY(40.25);
-            this->getChildByID("bottom-right-menu")->getChildByID("treasure-room-button")->setPositionY(100.25);
-        }
-
         CCMenu* m_creatorButtonsMenu = as<CCMenu*>(this->getChildByID("creator-buttons-menu"));
         as<CCNode*>(m_creatorButtonsMenu->getChildByID("versus-button"))->removeFromParent();
         as<CCNode*>(m_creatorButtonsMenu->getChildByID("map-button"))->removeFromParent();
