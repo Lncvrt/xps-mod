@@ -4,12 +4,14 @@
 #include <Geode/modify/LoadingLayer.hpp>
 #include <Geode/modify/GameManager.hpp>
 #include <Geode/modify/GJGarageLayer.hpp>
+#include <Geode/modify/ProfilePage.hpp>
 
 #include <Geode/utils/web.hpp>
 
-using namespace geode::prelude;
-
 #include <string>
+#include <matjson.hpp>
+
+using namespace geode::prelude;
 
 void saveIcons() {
     auto gm = GameManager::get();
@@ -144,7 +146,8 @@ class $modify(MenuLayerMod, MenuLayer) {
 
         auto xpsButtonsRight = CCMenu::create();
         auto xpsButtonsLeft = CCMenu::create();
-        xpsButtonsRight->setPosition(winSize.width-125, 25);
+        //i need to redo positions and calculate this again lmao
+        xpsButtonsRight->setPosition(winSize.width-78, 20);
         xpsButtonsLeft->setPosition(55, 15);
         xpsButtonsRight->setID("xps-buttons-right"_spr);
         xpsButtonsLeft->setID("xps-buttons-left"_spr);
@@ -155,11 +158,13 @@ class $modify(MenuLayerMod, MenuLayer) {
         xpsButtonsRight->addChild(xpsTwitchButton);
         xpsButtonsLeft->addChild(xpsWebsiteButton);
         xpsButtonsLeft->addChild(xpsDashboardButton);
-        xpsTwitterButton->setPositionX(32);
-        xpsYoutubeButton->setPositionX(64);
-        xpsTwitchButton->setPositionX(96);
+        xpsButtonsRight->setLayout(RowLayout::create());
         xpsWebsiteButton->setPositionY(10);
         xpsDashboardButton->setPositionY(42.5);
+
+        AxisLayout* xpsButtonsRightLayout = as<AxisLayout*>(xpsButtonsRight->getLayout());
+        xpsButtonsRightLayout->setGap(2);
+        xpsButtonsRight->updateLayout();
 
         this->addChild(xpsButtonsRight);
         this->addChild(xpsButtonsLeft);
@@ -168,6 +173,7 @@ class $modify(MenuLayerMod, MenuLayer) {
         auto profileButton = this->getChildByID("profile-menu");
         profileButton->setPosition(101,125);
         profileName->setPosition(57,161);
+        // (^) this needs to be done properly (i think i cant remember)
 
         return true;
     }
@@ -201,55 +207,11 @@ class $modify(MenuLayerMod, MenuLayer) {
     }
 };
 
-class $modify(CreatorLayer) {
-    bool init() {
-        if (!CreatorLayer::init()) {
-            return false;
-        }
-
-        CCMenu* m_creatorButtonsMenu = as<CCMenu*>(this->getChildByID("creator-buttons-menu"));
-        as<CCNode*>(m_creatorButtonsMenu->getChildByID("versus-button"))->removeFromParent();
-        as<CCNode*>(m_creatorButtonsMenu->getChildByID("map-button"))->removeFromParent();
-        as<CCNode*>(m_creatorButtonsMenu->getChildByID("event-button"))->removeFromParent();
-
-        for(int i = 0; i < m_creatorButtonsMenu->getChildrenCount(); i++) {
-            auto node = as<CCNode*>(m_creatorButtonsMenu->getChildren()->objectAtIndex(i));
-            auto sprite = as<CCSprite*>(node->getChildren()->objectAtIndex(0));
-            auto nodeID = node->getID();
-            
-            sprite->setScale(0.85);
-
-            if(nodeID == "featured-button")
-                node->setZOrder(-5);
-
-            if(nodeID == "lists-button")
-                node->setZOrder(-4);
-
-            if(nodeID == "map-packs-button")
-                node->setZOrder(-3);
-                    
-            if(nodeID == "search-button")
-                node->setZOrder(-2);
-
-            if(nodeID == "quests-button")
-                node->setZOrder(-1);
-        
-            if(nodeID == "search-button")
-                node->setZOrder(-1);
-
-            if(nodeID == "paths-button")
-                node->setZOrder(1);
-        }
-
-        AxisLayout* menuLayout = as<AxisLayout*>(m_creatorButtonsMenu->getLayout());
-        menuLayout->setGap(13.5);
-        m_creatorButtonsMenu->updateLayout();
-
-        return true;
-    }
-};
-
 class $modify(LoadingLayer) {
+    struct Fields {
+        EventListener<web::WebTask> m_listener;
+    };
+
     bool init(bool p0) {
         if (!LoadingLayer::init(p0)) {
             return false;
@@ -257,6 +219,30 @@ class $modify(LoadingLayer) {
 
         this->getChildByID("cocos2d-logo")->setVisible(false);
         this->getChildByID("fmod-logo")->setVisible(false);
+
+        if (auto label = static_cast<CCLabelBMFont*>(this->getChildByID("geode-small-label"))) {
+            label->setString("XPS: Loading...");
+        }
+
+        //uhhhh i dont even know what i was trying to accomplish here
+        // m_fields->m_listener.bind([] (web::WebTask::Event* e) {
+        //     if (web::WebResponse* res = e->getValue()) {
+        //         auto result = res->string().unwrap();
+        //         auto parsed = matjson::parse(result);
+        //         if (!parsed) {
+        //             log::error("Failed to parse json: {}", parsed.unwrapErr());
+        //             return true;
+        //         }
+        //         matjson::Value object = parsed.unwrap();
+        //         auto resultVersion = object["version"].asString().unwrap();
+        //         if (resultVersion != "1.0.0-alpha2") {
+
+        //         }
+        //     }
+        // });
+
+        // auto req = web::WebRequest();
+        // m_fields->m_listener.setFilter(req.get("https://xps-api.lncvrt.xyz/versions/gd/windows"));
 
         return true;
     }
@@ -283,3 +269,42 @@ class $modify(GJGarageLayer) {
         return GJGarageLayer::init();
     }
 };
+
+//this was meant to be like profile comments so you could see what other people wrote but i dont think this will happen 💀
+//if theres some lib that lets me do list view stuff then ill considor actually adding this
+// class $modify(ProfilePageMod, ProfilePage) {
+//     void onXpsButtonPress(CCObject*) {
+//         FLAlertLayer::create("XPS", "", "OK")->show();
+//     }
+
+//     void getUserInfoFinished(GJUserScore *p0){
+//         ProfilePage::getUserInfoFinished(p0);
+
+//         auto children = as<CCLayer*>(this->getChildren()->objectAtIndex(0));
+//         auto menu = as<CCMenu*>(children->getChildren()->objectAtIndex(16));
+
+//         auto xpsSprite = CCSprite::create("xps-profile-messages-button.png"_spr);
+
+//         auto xpsButton = CCMenuItemSpriteExtra::create(
+//             xpsSprite,
+//             this,
+//             menu_selector(ProfilePageMod::onXpsButtonPress)
+//         );
+//         xpsButton->setID("xps-button"_spr);
+
+//         menu->addChild(xpsButton);
+//         menu->updateLayout();
+
+//         BoomListView* myListView = new BoomListView();
+//         const char* myTitle = "My Title";
+//         cocos2d::ccColor4B myColor = cocos2d::ccColor4B{161, 88, 44, 255};
+//         float myWidth = 340.0f;
+//         float myHeight = 140.0f;
+
+//         auto result = GJCommentListLayer::create(myListView, myTitle, myColor, myWidth, myHeight, false);
+//         result->setPosition(100, 85);
+
+//         // this->addChild(result);
+//         // children->setVisible(false);
+//     }
+// };
