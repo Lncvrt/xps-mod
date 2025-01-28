@@ -178,7 +178,16 @@ class $modify(MenuLayerMod, MenuLayer) {
     }
 
     void onXpsButtonPress(CCObject*) {
-        FLAlertLayer::create("XPS", "Welcome to XPS 3.0, Xytriza is working on making XPS unique but it may take some time. Hope you enjoy playing at the time of this being updated.", "OK")->show();
+        geode::createQuickPopup(
+            "XPS",
+            "Welcome to XPS 3.0, If you need any support, or have questions, Join the Discord.\n\nXPS Android launcher is coming soon, which will help manage all Android versions if you use an Android Device.",
+            "Dismiss", "Join the Discord",
+            [](auto, bool discordBtn) {
+                if (discordBtn) {
+                    web::openLinkInBrowser("https://xps.lncvrt.xyz/discord");
+                }
+            }
+        );
     }
 
     void openWebsiteLink(CCObject*) {
