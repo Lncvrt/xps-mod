@@ -1,15 +1,12 @@
 #include <Geode/Geode.hpp>
 #include <Geode/modify/MenuLayer.hpp>
-#include <Geode/modify/CreatorLayer.hpp>
 #include <Geode/modify/LoadingLayer.hpp>
 #include <Geode/modify/GameManager.hpp>
 #include <Geode/modify/GJGarageLayer.hpp>
-#include <Geode/modify/ProfilePage.hpp>
 
 #include <Geode/utils/web.hpp>
 
 #include <string>
-#include <matjson.hpp>
 
 using namespace geode::prelude;
 
@@ -65,7 +62,12 @@ class $modify(MenuLayerMod, MenuLayer) {
 
         auto winSize = CCDirector::sharedDirector()->getWinSize();
 
-        auto xpsSprite = CCSprite::create("xps-logo-transparent-gold.png"_spr);
+        auto xpsSprite = CircleButtonSprite::createWithSpriteFrameName(
+                "xps-logo-transparent-gold.png"_spr,
+                1.2f,
+                CircleBaseColor::Green,
+                CircleBaseSize::MediumAlt
+            );
         auto blankSprite = CCSprite::createWithSpriteFrameName("GJ_longBtn01_001.png");
         auto discordSprite = CCSprite::createWithSpriteFrameName("gj_discordIcon_001.png");
         auto twitterSprite = CCSprite::createWithSpriteFrameName("gj_twIcon_001.png");
@@ -76,7 +78,7 @@ class $modify(MenuLayerMod, MenuLayer) {
 		CCLabelBMFont* xpsWebsiteLabel = CCLabelBMFont::create("Website", "bigFont.fnt");
 
         auto xpsButton = CCMenuItemSpriteExtra::create(
-            CircleButtonSprite::create(xpsSprite),
+            xpsSprite,
             this,
             menu_selector(MenuLayerMod::onXpsButtonPress)
         );
@@ -87,46 +89,46 @@ class $modify(MenuLayerMod, MenuLayer) {
             this,
             menu_selector(MenuLayerMod::openWebsiteLink)
         );
-        xpsWebsiteButton->setID("website-button"_spr);
+        xpsWebsiteButton->setID("xps-website-button"_spr);
 
         auto xpsDashboardButton = CCMenuItemSpriteExtra::create(
             blankSprite,
             this,
             menu_selector(MenuLayerMod::openDashboardLink)
         );
-        xpsDashboardButton->setID("dashboard-button"_spr);
+        xpsDashboardButton->setID("xps-dashboard-button"_spr);
 
         auto xpsDiscordButton = CCMenuItemSpriteExtra::create(
             discordSprite,
             this,
             menu_selector(MenuLayerMod::openDiscordLink)
         );
-        xpsDiscordButton->setID("discord-button"_spr);
+        xpsDiscordButton->setID("xps-discord-button"_spr);
 
         auto xpsTwitterButton = CCMenuItemSpriteExtra::create(
             twitterSprite,
             this,
             menu_selector(MenuLayerMod::openTwitterLink)
         );
-        xpsTwitterButton->setID("twitter-button"_spr);
+        xpsTwitterButton->setID("xps-twitter-button"_spr);
 
         auto xpsYoutubeButton = CCMenuItemSpriteExtra::create(
             youtubeSprite,
             this,
             menu_selector(MenuLayerMod::openYoutubeLink)
         );
-        xpsYoutubeButton->setID("youtube-button"_spr);
+        xpsYoutubeButton->setID("xps-youtube-button"_spr);
 
         auto xpsTwitchButton = CCMenuItemSpriteExtra::create(
             twitchSprite,
             this,
             menu_selector(MenuLayerMod::openTwitchLink)
         );
-        xpsTwitchButton->setID("twitch-button"_spr);
+        xpsTwitchButton->setID("xps-twitch-button"_spr);
 
         xpsButton->setID("xps-button"_spr);
-        xpsWebsiteButton->setID("website-button"_spr);
-        xpsDashboardButton->setID("dashboard-button"_spr);
+        xpsWebsiteButton->setID("xps-website-button"_spr);
+        xpsDashboardButton->setID("xps-dashboard-button"_spr);
 
         xpsDashboardLabel->setScale(0.4);
         xpsWebsiteLabel->setScale(0.55f);
@@ -135,8 +137,6 @@ class $modify(MenuLayerMod, MenuLayer) {
 
         xpsDashboardButton->addChild(xpsDashboardLabel);
         xpsWebsiteButton->addChild(xpsWebsiteLabel);
-        
-        xpsSprite->setScale(0.55f);
 
         if (auto bottomMenu = this->getChildByID("bottom-menu")) {
             bottomMenu->removeChildByID("newgrounds-button");
@@ -219,30 +219,6 @@ class $modify(LoadingLayer) {
         this->getChildByID("cocos2d-logo")->setVisible(false);
         this->getChildByID("fmod-logo")->setVisible(false);
 
-        if (auto label = static_cast<CCLabelBMFont*>(this->getChildByID("geode-small-label"))) {
-            label->setString("XPS: Loading...");
-        }
-
-        //uhhhh i dont even know what i was trying to accomplish here
-        // m_fields->m_listener.bind([] (web::WebTask::Event* e) {
-        //     if (web::WebResponse* res = e->getValue()) {
-        //         auto result = res->string().unwrap();
-        //         auto parsed = matjson::parse(result);
-        //         if (!parsed) {
-        //             log::error("Failed to parse json: {}", parsed.unwrapErr());
-        //             return true;
-        //         }
-        //         matjson::Value object = parsed.unwrap();
-        //         auto resultVersion = object["version"].asString().unwrap();
-        //         if (resultVersion != "1.0.0-alpha2") {
-
-        //         }
-        //     }
-        // });
-
-        // auto req = web::WebRequest();
-        // m_fields->m_listener.setFilter(req.get("https://xps-api.lncvrt.xyz/versions/gd/windows"));
-
         return true;
     }
 };
@@ -268,42 +244,3 @@ class $modify(GJGarageLayer) {
         return GJGarageLayer::init();
     }
 };
-
-//this was meant to be like profile comments so you could see what other people wrote but i dont think this will happen 💀
-//if theres some lib that lets me do list view stuff then ill considor actually adding this
-// class $modify(ProfilePageMod, ProfilePage) {
-//     void onXpsButtonPress(CCObject*) {
-//         FLAlertLayer::create("XPS", "", "OK")->show();
-//     }
-
-//     void getUserInfoFinished(GJUserScore *p0){
-//         ProfilePage::getUserInfoFinished(p0);
-
-//         auto children = as<CCLayer*>(this->getChildren()->objectAtIndex(0));
-//         auto menu = as<CCMenu*>(children->getChildren()->objectAtIndex(16));
-
-//         auto xpsSprite = CCSprite::create("xps-profile-messages-button.png"_spr);
-
-//         auto xpsButton = CCMenuItemSpriteExtra::create(
-//             xpsSprite,
-//             this,
-//             menu_selector(ProfilePageMod::onXpsButtonPress)
-//         );
-//         xpsButton->setID("xps-button"_spr);
-
-//         menu->addChild(xpsButton);
-//         menu->updateLayout();
-
-//         BoomListView* myListView = new BoomListView();
-//         const char* myTitle = "My Title";
-//         cocos2d::ccColor4B myColor = cocos2d::ccColor4B{161, 88, 44, 255};
-//         float myWidth = 340.0f;
-//         float myHeight = 140.0f;
-
-//         auto result = GJCommentListLayer::create(myListView, myTitle, myColor, myWidth, myHeight, false);
-//         result->setPosition(100, 85);
-
-//         // this->addChild(result);
-//         // children->setVisible(false);
-//     }
-// };
