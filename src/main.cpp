@@ -170,8 +170,8 @@ class $modify(MenuLayerMod, MenuLayer) {
 
         auto profileName = this->getChildByID("player-username");
         auto profileButton = this->getChildByID("profile-menu");
-        profileButton->setPosition(101,125);
-        profileName->setPosition(57,161);
+        profileButton->setPosition(profileButton->getPositionX()+20, profileButton->getPositionY()+20);
+        profileName->setPosition(profileName->getPositionX()+20, profileName->getPositionY()+20);
         // (^) this needs to be done properly (i think i cant remember)
 
         return true;
