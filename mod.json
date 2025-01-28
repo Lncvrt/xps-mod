@@ -19,12 +19,17 @@
             "name": "Alternate Menu Buttons",
             "type": "bool",
             "default": false
+        },
+        "show-xps-android-launcher-note-button": {
+            "name": "Show XPS Button",
+            "type": "bool",
+            "default": true
         }
     },
 	"dependencies": [
         {
             "id": "geode.node-ids",
-            "version": "v1.18.0",
+            "version": "v1.19.0",
             "importance": "required"
         }
     ],

@@ -140,39 +140,47 @@ class $modify(MenuLayerMod, MenuLayer) {
 
         if (auto bottomMenu = this->getChildByID("bottom-menu")) {
             bottomMenu->removeChildByID("newgrounds-button");
-            bottomMenu->addChild(xpsButton);
+            if (Mod::get()->getSettingValue<bool>("show-xps-android-launcher-note-button")) {
+                bottomMenu->addChild(xpsButton);
+            }
             bottomMenu->updateLayout();
         }
 
         auto xpsButtonsRight = CCMenu::create();
-        auto xpsButtonsLeft = CCMenu::create();
         xpsButtonsRight->setPosition(winSize.width-70.8f, 20);
-        xpsButtonsLeft->setPosition(55, 15);
         xpsButtonsRight->setID("xps-buttons-right"_spr);
-        xpsButtonsLeft->setID("xps-buttons-left"_spr);
-        
+
         xpsButtonsRight->addChild(xpsDiscordButton);
         xpsButtonsRight->addChild(xpsTwitterButton);
         xpsButtonsRight->addChild(xpsYoutubeButton);
         xpsButtonsRight->addChild(xpsTwitchButton);
-        xpsButtonsLeft->addChild(xpsWebsiteButton);
-        xpsButtonsLeft->addChild(xpsDashboardButton);
         xpsButtonsRight->setLayout(RowLayout::create());
-        xpsWebsiteButton->setPositionY(10);
-        xpsDashboardButton->setPositionY(42.5);
 
         AxisLayout* xpsButtonsRightLayout = as<AxisLayout*>(xpsButtonsRight->getLayout());
         xpsButtonsRightLayout->setGap(2);
         xpsButtonsRight->updateLayout();
 
-        this->addChild(xpsButtonsRight);
-        this->addChild(xpsButtonsLeft);
+        if (!Mod::get()->getSettingValue<bool>("alternate-menu-buttons")) {
+            auto xpsButtonsLeft = CCMenu::create();
+            xpsButtonsLeft->setID("xps-buttons-left"_spr);
+            xpsButtonsLeft->setPosition(55, 15);
+            xpsButtonsLeft->addChild(xpsWebsiteButton);
+            xpsButtonsLeft->addChild(xpsDashboardButton);
+            xpsWebsiteButton->setPositionY(10);
+            xpsDashboardButton->setPositionY(42.5f);
+            this->addChild(xpsButtonsLeft);
+            auto profileName = this->getChildByID("player-username");
+            auto profileButton = this->getChildByID("profile-menu");
+            profileButton->setPosition(profileButton->getPositionX()+20, profileButton->getPositionY()+20);
+            profileName->setPosition(profileName->getPositionX()+20, profileName->getPositionY()+20);
+        } else {
+            xpsButtonsRight->addChild(xpsWebsiteButton);
+            xpsButtonsRight->addChild(xpsDashboardButton);
+            xpsWebsiteButton->setPosition(winSize.width-285, 50);
+            xpsDashboardButton->setPosition(winSize.width-285, 82.5f);
+        }
 
-        auto profileName = this->getChildByID("player-username");
-        auto profileButton = this->getChildByID("profile-menu");
-        profileButton->setPosition(profileButton->getPositionX()+20, profileButton->getPositionY()+20);
-        profileName->setPosition(profileName->getPositionX()+20, profileName->getPositionY()+20);
-        // (^) this needs to be done properly (i think i cant remember)
+        this->addChild(xpsButtonsRight);
 
         return true;
     }
@@ -182,12 +190,30 @@ class $modify(MenuLayerMod, MenuLayer) {
             "XPS",
             "Welcome to XPS 3.0, If you need any support, or have questions, Join the Discord.\n\nXPS Android launcher is coming soon, which will help manage all Android versions if you use an Android Device.",
             "Dismiss", "Join the Discord",
-            [](auto, bool discordBtn) {
+            [this](auto, bool discordBtn) {
                 if (discordBtn) {
                     web::openLinkInBrowser("https://xps.lncvrt.xyz/discord");
                 }
+                geode::createQuickPopup(
+                    "Hide Button?",
+                    "Would you like to hide the XPS Button?",
+                    "Yes", "No",
+                    [this](auto, bool noButton) {
+                        if (!noButton) {
+                            hideXpsButton();
+                        }
+                    }
+                );
             }
         );
+    }
+
+    void hideXpsButton() {
+        if (auto bottomMenu = this->getChildByID("bottom-menu")) {
+            bottomMenu->removeChildByID("xps-button"_spr);
+            bottomMenu->updateLayout();
+            Mod::get()->setSettingValue<bool>("show-xps-android-launcher-note-button", false);
+        }
     }
 
     void openWebsiteLink(CCObject*) {
