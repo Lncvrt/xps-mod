@@ -146,8 +146,7 @@ class $modify(MenuLayerMod, MenuLayer) {
 
         auto xpsButtonsRight = CCMenu::create();
         auto xpsButtonsLeft = CCMenu::create();
-        //i need to redo positions and calculate this again lmao
-        xpsButtonsRight->setPosition(winSize.width-78, 20);
+        xpsButtonsRight->setPosition(winSize.width-70.8f, 20);
         xpsButtonsLeft->setPosition(55, 15);
         xpsButtonsRight->setID("xps-buttons-right"_spr);
         xpsButtonsLeft->setID("xps-buttons-left"_spr);
