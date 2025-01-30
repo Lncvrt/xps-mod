@@ -3,6 +3,7 @@
 #include <Geode/modify/LoadingLayer.hpp>
 #include <Geode/modify/GameManager.hpp>
 #include <Geode/modify/GJGarageLayer.hpp>
+#include <Geode/modify/LevelSearchLayer.hpp>
 
 #include <Geode/utils/web.hpp>
 
@@ -267,5 +268,23 @@ class $modify(GJGarageLayer) {
     bool init() {
         loadIcons();
         return GJGarageLayer::init();
+    }
+};
+
+class $modify(LevelSearchLayer) {
+    bool init(int p0) {
+        if (!LevelSearchLayer::init(p0)) {
+            return false;
+        }
+
+        //when u backspace all the way this becomes useless lol
+        auto searchBar = this->getChildByID("search-bar");
+        if (searchBar) {
+            auto children = searchBar->getChildren();
+            auto text = dynamic_cast<CCLabelBMFont*>(children->objectAtIndex(1));
+            if (text) {
+                text->setColor(ccColor3B(255, 255, 255));
+            }
+        }
     }
 };
