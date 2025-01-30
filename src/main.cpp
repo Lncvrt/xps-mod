@@ -68,14 +68,12 @@ class $modify(MenuLayerMod, MenuLayer) {
                 CircleBaseColor::Green,
                 CircleBaseSize::MediumAlt
             );
-        auto blankSprite = CCSprite::createWithSpriteFrameName("GJ_longBtn01_001.png");
+        auto websiteSprite = CCSprite::createWithSpriteFrameName("xps-website-button.png"_spr);
+        auto dashboardSprite = CCSprite::createWithSpriteFrameName("xps-dashboard-button.png"_spr);
         auto discordSprite = CCSprite::createWithSpriteFrameName("gj_discordIcon_001.png");
         auto twitterSprite = CCSprite::createWithSpriteFrameName("gj_twIcon_001.png");
         auto youtubeSprite = CCSprite::createWithSpriteFrameName("gj_ytIcon_001.png");
         auto twitchSprite = CCSprite::createWithSpriteFrameName("gj_twitchIcon_001.png");
-
-		CCLabelBMFont* xpsDashboardLabel = CCLabelBMFont::create("Dashboard", "bigFont.fnt");
-		CCLabelBMFont* xpsWebsiteLabel = CCLabelBMFont::create("Website", "bigFont.fnt");
 
         auto xpsButton = CCMenuItemSpriteExtra::create(
             xpsSprite,
@@ -85,14 +83,14 @@ class $modify(MenuLayerMod, MenuLayer) {
         xpsButton->setID("xps-button"_spr);
 
         auto xpsWebsiteButton = CCMenuItemSpriteExtra::create(
-            blankSprite,
+            websiteSprite,
             this,
             menu_selector(MenuLayerMod::openWebsiteLink)
         );
         xpsWebsiteButton->setID("xps-website-button"_spr);
 
         auto xpsDashboardButton = CCMenuItemSpriteExtra::create(
-            blankSprite,
+            dashboardSprite,
             this,
             menu_selector(MenuLayerMod::openDashboardLink)
         );
@@ -129,14 +127,6 @@ class $modify(MenuLayerMod, MenuLayer) {
         xpsButton->setID("xps-button"_spr);
         xpsWebsiteButton->setID("xps-website-button"_spr);
         xpsDashboardButton->setID("xps-dashboard-button"_spr);
-
-        xpsDashboardLabel->setScale(0.4);
-        xpsWebsiteLabel->setScale(0.55f);
-        xpsDashboardLabel->setPosition(45, 17.5);
-        xpsWebsiteLabel->setPosition(45, 17.5);
-
-        xpsDashboardButton->addChild(xpsDashboardLabel);
-        xpsWebsiteButton->addChild(xpsWebsiteLabel);
 
         if (auto bottomMenu = this->getChildByID("bottom-menu")) {
             bottomMenu->removeChildByID("newgrounds-button");
