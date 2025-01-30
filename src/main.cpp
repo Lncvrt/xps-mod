@@ -286,5 +286,7 @@ class $modify(LevelSearchLayer) {
                 text->setColor(ccColor3B(255, 255, 255));
             }
         }
+
+        return true;
     }
 };
